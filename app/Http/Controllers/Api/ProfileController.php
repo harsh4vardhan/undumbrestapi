@@ -7,6 +7,7 @@ use App\Http\Resources\AllPostsCollection;
 use App\Http\Resources\UsersCollection;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Follow;
 
 class ProfileController extends Controller
 {
@@ -18,13 +19,15 @@ class ProfileController extends Controller
         try {
             $posts = Post::where('user_id', $id)->orderBy('created_at', 'desc')->get();
             $user = User::where('id', $id)->get();
-
+            $noOfFollwers = Follow::where('following_id', $id)->count();
             return response()->json([
                 'posts' => new AllPostsCollection($posts),
-                'user' => new UsersCollection($user)
+                'user' => new UsersCollection($user),
+                'noOfFollwers' => $noOfFollwers
             ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 }
+ 

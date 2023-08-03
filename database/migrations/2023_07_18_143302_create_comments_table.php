@@ -27,6 +27,8 @@ return new class extends Migration {
                 ->onDelete('cascade');
             $table->unsignedBigInteger('comment_id');
             $table->text('text');
+            $table->integer('level');
+            $table->integer('main_parent_id');
             $table->timestamps();
         });
     }

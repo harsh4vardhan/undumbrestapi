@@ -24,7 +24,10 @@ class AllPostsCollection extends ResourceCollection
                 'comments' => $post->comments->map(function ($comment) {
                     return [
                         'id' => $comment->id,
+                        'parent_id' => $comment->comment_id,
+                        'level_id' => $comment->level,
                         'text' => $comment->text,
+                        'main_parent_id' => $comment->main_parent_id,
                         'user' => [
                             'id' => $comment->user->id,
                             'name' => $comment->user->name,
