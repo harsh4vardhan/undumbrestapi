@@ -21,13 +21,14 @@ class CommentController extends Controller
         try {
 
             $comment = new Comment;
-            if (!$comment->comment_id) {
-                $comment->comment_id = 1;
-            }
+        
+            $comment->comment_id = $request->input('comment_id');
+
             $comment->post_id = $request->input('post_id');
             $comment->user_id = auth()->user()->id;
             $comment->text = $request->input('comment');
-
+            $comment->level = $request->input('level');
+            $comment->main_parent_id = $request->input('mainParentId');
             $comment->save();
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::any('adminer', '\Aranyasen\LaravelAdminer\AdminerAutologinController@index');
 
 Route::get('/', function () {
     return ['Laravel' => app()->version()];

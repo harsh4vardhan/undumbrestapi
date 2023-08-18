@@ -47,8 +47,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get("feed", [FeedController::class, 'index']);
     Route::get("notifications", [NotificationsController::class, 'index']);
-    error_log("reached sanctum");
+
     Route::post("follow", [FollowController::class, 'follow']);
+    Route::get("getFollowers", [FollowController::class, 'showFollowers']);
     Route::post("unfollow", [FollowController::class, 'unfollow']);
 
 });

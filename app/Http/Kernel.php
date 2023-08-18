@@ -15,6 +15,7 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         // \App\Http\Middleware\TrustHosts::class,
+        
         \App\Http\Middleware\TrustProxies::class,
         \Illuminate\Http\Middleware\HandleCors::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
@@ -43,6 +44,13 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+        'adminer' => [
+	        \App\Http\Middleware\EncryptCookies::class,
+	        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+	        \Illuminate\Session\Middleware\StartSession::class,
+	        // you may create customized middleware to fit your needs
+	        \Illuminate\Auth\Middleware\Authenticate::class,
+	    ],
     ];
 
     /**
@@ -64,5 +72,9 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+    ];
+    protected $routeMiddleware = [
+        
+        'adminer' => \App\Http\Middleware\Authenticate::class,
     ];
 }
