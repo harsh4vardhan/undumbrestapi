@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use App\Models\Comment;
+use App\Models\Post;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -16,10 +18,23 @@ class AllPostsCollection extends ResourceCollection
     public function toArray(Request $request)
     {
         return $this->collection->map(function ($post) {
+            $story = explode(',',$post->story);
+            $repostUrl = null;
+            if(count($story )> 1) {
+                $repostedID = end($story);
+                $repostUrl = Post::select('story')->where('id',$repostedID)->get()->toArray();
+                $repostUrl = reset($repostUrl);
+                if($repostUrl) {
+                    $repostUrl = reset($repostUrl);
+                    $repostUrl = strtok($repostUrl, ",");
+                }
+            }
             return [
                 'id' => $post->id,
-                'text' => $post->text,
-                'video' => url('/') . $post->video,
+                'text' => $post->title,
+                'video' =>  $story,
+                'repostUrl' => $repostUrl,
+
                 'tags' => $post->tags,
                 'created_at' => $post->created_at->format(' M D Y'),
                 'comments' => $post->comments->map(function ($comment) {
