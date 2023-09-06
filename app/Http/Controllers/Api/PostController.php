@@ -27,11 +27,12 @@ class PostController extends Controller
             if ($request->video) {
                 $post = (new FileService)->addVideo($post, $request);
             } else {
-                $post->video = '';
+                $post->story = '';
             }
             $post->user_id = auth()->user()->id;
-            $post->text = $request->input('text');
+            $post->title = $request->input('text');
             $post->tags = $request->input('tags');
+            $post->story =($post->story).($request->input('textValueForSlide'));
             $post->save();
 
             return response()->json(['success' => 'OK'], 200);

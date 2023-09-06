@@ -39,7 +39,7 @@ class FileService
 
         $name = time() . '.' . $extension;
         $video->move(public_path() . '/files/', $name);
-        $model->video = '/files/' . $name;
+        $model->story = '/files/' . $name;
 
         return $model;
     }

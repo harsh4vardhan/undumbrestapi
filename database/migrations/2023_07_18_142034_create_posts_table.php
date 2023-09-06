@@ -19,8 +19,8 @@ return new class extends Migration {
                 ->on('users')
                 ->onDelete('cascade');
 
-            $table->text('text');
-            $table->string('video');
+            $table->text('title');
+            $table->string('story');
             $table->string('tags');
             $table->timestamps();
         });
