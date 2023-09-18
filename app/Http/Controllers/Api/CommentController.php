@@ -21,9 +21,8 @@ class CommentController extends Controller
         try {
 
             $comment = new Comment;
-        
-            $comment->comment_id = $request->input('comment_id');
 
+            $comment->comment_id = $request->input('comment_id');
             $comment->post_id = $request->input('post_id');
             $comment->user_id = auth()->user()->id;
             $comment->text = $request->input('comment');

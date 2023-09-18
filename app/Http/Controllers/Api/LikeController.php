@@ -19,7 +19,13 @@ class LikeController extends Controller
             $like = new Like;
             $like->type    = $request->input('type');
             $like->user_id = auth()->user()->id;
-            $like->post_id = $request->input('post_id');
+            $like->post_id = 0;
+            $like->comment_id = 0;
+            if ( $request->input('post_id')) {
+                $like->post_id = $request->input('post_id');
+            } else if( $request->input('comment_id')) {
+                $like->comment_id = $request->input('comment_id');
+            }
             $like->save();
 
             return response()->json([

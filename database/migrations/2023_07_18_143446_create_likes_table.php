@@ -16,10 +16,15 @@ return new class extends Migration
 
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('post_id');
-
+            $table->unsignedBigInteger('comments_id');
             $table->foreign('post_id')
                 ->references('id')
                 ->on('posts')
+                ->onDelete('cascade');
+
+            $table->foreign('comments_id')
+                ->references('id')
+                ->on('comments')
                 ->onDelete('cascade');
 
             $table->foreign('user_id')

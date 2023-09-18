@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\Comment;
 use App\Models\Post;
-
+use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -56,24 +56,19 @@ class AllPostsCollection extends ResourceCollection
                                 $b = $val['level'];
                             }
                         }
-
                         $max_level = ($b - $CommentLevel[0]['level']);
-
-
                     }
-
+                    $noOfCommentlike = Like::where(['type'=>'comment','comment_id'=>$comment->id])->get();
 //                    if($commentMaxLevel !=0 ) {
 
 ////                        $commentMaxLevel = $commentMaxLevel - $comment->level;
 //                    }
                     return [
                         'id' => $comment->id,
-
                         'parent_id' => $comment->comment_id,
                         'level_id' => $comment->level,
                         'text' => $comment->text,
                         'main_parent_id' => $comment->main_parent_id,
-
                         'max_level' => $max_level,
                         'noOfChildren' => Comment::where('comment_id',$comment->id)->count(),
                         'user' => [
@@ -81,6 +76,7 @@ class AllPostsCollection extends ResourceCollection
                             'name' => $comment->user->name,
                             'image' => url('/') . $comment->user->image
                         ],
+                        'likes' => $noOfCommentlike,
                     ];
                 }),
                 'likes' => $post->likes->map(function ($like) {
