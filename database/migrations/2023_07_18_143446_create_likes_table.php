@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
 
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('post_id');
-            $table->unsignedBigInteger('comments_id');
+            $table->unsignedBigInteger('post_id')->nullable();
+            $table->unsignedBigInteger('comments_id')->nullable();
             $table->foreign('post_id')
                 ->references('id')
                 ->on('posts')

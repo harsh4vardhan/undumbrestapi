@@ -58,11 +58,22 @@ class AllPostsCollection extends ResourceCollection
                         }
                         $max_level = ($b - $CommentLevel[0]['level']);
                     }
-                    $noOfCommentlike = Like::where(['type'=>'comment','comment_id'=>$comment->id])->get();
+                    $noOfCommentlike = Like::where(['type'=>'comment','comments_id'=>$comment->id])->get()->count();
 //                    if($commentMaxLevel !=0 ) {
 
 ////                        $commentMaxLevel = $commentMaxLevel - $comment->level;
 //                    }
+                    $likedByUser = false;
+                    if(auth()->user()) {
+                        $isLiked = Like::where([
+                            'user_id' => auth()->user()->id,
+                            'comments_id' => $comment->id,
+                        ])->get();
+                        error_log( count(collect($isLiked)));
+                        if(count(collect($isLiked)) > 0) {
+                            $likedByUser = true;
+                        }
+                    }
                     return [
                         'id' => $comment->id,
                         'parent_id' => $comment->comment_id,
@@ -76,7 +87,8 @@ class AllPostsCollection extends ResourceCollection
                             'name' => $comment->user->name,
                             'image' => url('/') . $comment->user->image
                         ],
-                        'likes' => $noOfCommentlike,
+                        'likedByUser' => $likedByUser,
+                        'allLikes' => $noOfCommentlike,
                     ];
                 }),
                 'likes' => $post->likes->map(function ($like) {

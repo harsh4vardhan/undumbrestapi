@@ -13,55 +13,88 @@ class LikeController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate(['post_id' => 'required']);
 
-        try {
-            $like = new Like;
-            $like->type    = $request->input('type');
-            $like->user_id = auth()->user()->id;
-            $like->post_id = 0;
-            $like->comment_id = 0;
-            if ( $request->input('post_id')) {
+//        $request->validate(['post_id' => 'required']);
+        $type = $request->input('type');
+        if($type === 'post') {
+            try {
+                $like = new Like;
+                $like->type    = $request->input('type');
+                $like->user_id = auth()->user()->id;
                 $like->post_id = $request->input('post_id');
-            } else if( $request->input('comment_id')) {
-                $like->comment_id = $request->input('comment_id');
-            }
-            $like->save();
+                $like->save();
 
-            return response()->json([
-                'like' => [
-                    'id' => $like->id,
-                    'post_id' => $like->post_id,
-                    'user_id' => $like->user_id
-                ],
-                'success' => 'OK'
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+                return response()->json([
+                    'like' => [
+                        'id' => $like->id,
+                        'post_id' => $like->post_id,
+                        'user_id' => $like->user_id
+                    ],
+                    'success' => 'OK'
+                ], 200);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 400);
+            }
+        } else {
+            $isLiked = Like::where([
+                'user_id' => auth()->user()->id,
+                'comments_id' => $request->input('comment_id'),
+            ])->get();
+            error_log( count(collect($isLiked)));
+            if(count(collect($isLiked)) === 0) {
+                try {
+                    $like = new Like;
+                    $like->type    = $request->input('type');
+                    $like->user_id = auth()->user()->id;
+                    $like->comments_id = $request->input('comment_id');
+                    $like->save();
+                } catch (\Exception $e) {
+                    return response()->json(['error' => $e->getMessage()], 400);
+                }
+                return response()->json([
+                    'like' => [
+                        'id' => $like->id,
+                        'post_id' => $like->post_id,
+                        'user_id' => $like->user_id
+                    ],
+                    'success' => 'OK'
+                ], 200);
+            } else {
+                $deleteLike = Like::where([
+                    'user_id' => auth()->user()->id,
+                    'comments_id' => $request->input('comment_id'),
+                ]);
+                $deleteLike->delete();
+            }
+
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy($id,$type = 'post')
     {
-        try {
-            $like = Like::find($id);
-            if (count(collect($like)) > 0) {
-                $like->delete();
-            }
+        error_log($id);
+        if ($type === 'post') {
 
-            return response()->json([
-                'like' => [
-                    'id' => $like->id,
-                    'post_id' => $like->post_id,
-                    'user_id' => $like->user_id
-                ],
-                'success' => 'OK'
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            try {
+                $like = Like::find($id);
+                if (count(collect($like)) > 0) {
+                    $like->delete();
+                }
+
+                return response()->json([
+                    'like' => [
+                        'id' => $like->id,
+                        'post_id' => $like->post_id,
+                        'user_id' => $like->user_id
+                    ],
+                    'success' => 'OK'
+                ], 200);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 400);
+            }
         }
     }
 }
